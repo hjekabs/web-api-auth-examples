@@ -16,7 +16,7 @@
 <body>
     
 
-    <h1>base.html</h1>
+    <h1>Spotify/socket/audio demo</h1>
 
 
     <h2>Logged in users:</h2>
@@ -25,6 +25,8 @@
 
     </ul>
 
+    <button id="audioButton">click me to play audio</button>
+
     <script>
     
 
@@ -32,6 +34,7 @@
     // add socket here
     const h1 = document.getElementsByTagName("h1")[0]
     const userList = document.getElementById("userList");
+    const audioButton = document.getElementById("audioButton");
 
     h1.addEventListener("click", () => {
         h1.style.color = "red";
@@ -95,6 +98,33 @@
             // `)
             socket.emit("fetched user data", res.data)
         })
+
+    // return users top songs
+    sendRequest("https://api.spotify.com/v1/me/top/tracks", headers)
+        .then((res) => {
+            console.log(res)
+        })
+
+    
+    
+
+    const playAudio = async () => {
+        // preset spotify preview url, we can play with audio api
+        const audio = new Audio("https://p.scdn.co/mp3-preview/3e05f5ed147ca075c7ae77c01f2cc0e14cfad78d?cid=774b29d4f13844c495f206cafdad9c86")
+        audio.type = "audi/wav";
+
+        try {
+            await audio.play();
+            console.log("audio should be playing")
+        }   catch (err){
+            console.log(err)
+        }
+    }
+
+    // will play the audio
+    audioButton.addEventListener("click", playAudio)
+
+
 
 
     </script>
