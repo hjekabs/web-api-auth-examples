@@ -88,6 +88,8 @@
 
         var params = getHashParams();
 
+        console.log(params)
+
         var access_token = params.access_token,
             refresh_token = params.refresh_token,
             error = params.error;
@@ -108,6 +110,7 @@
                   'Authorization': 'Bearer ' + access_token
                 },
                 success: function(response) {
+                  console.log(response)
                   userProfilePlaceholder.innerHTML = userProfileTemplate(response);
 
                   $('#login').hide();

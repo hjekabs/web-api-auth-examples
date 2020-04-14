@@ -12,10 +12,12 @@ var request = require('request'); // "Request" library
 var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
+const path = require("path");
 
-var client_id = 'CLIENT_ID'; // Your client id
-var client_secret = 'CLIENT_SECRET'; // Your secret
-var redirect_uri = 'REDIRECT_URI'; // Your redirect uri
+
+var client_id = 'f79dd1f6402b41fe8828c55654cea80a'; // Your client id
+var client_secret = 'ebdd81999c1742e39a58284d23270702'; // Your secret
+var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
 /**
  * Generates a random string containing numbers and letters
@@ -34,7 +36,10 @@ var generateRandomString = function(length) {
 
 var stateKey = 'spotify_auth_state';
 
-var app = express();
+// setup the server here
+const app = express();
+const http = require('http').createServer(app);
+const io = require("socket.io").listen(http);
 
 app.use(express.static(__dirname + '/public'))
    .use(cors())
@@ -143,5 +148,27 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
-console.log('Listening on 8888');
-app.listen(8888);
+io.on("connection", function(socket) {
+
+
+  console.log("a user connected")
+  socket.on("disconnect", function() {
+    console.log("user disconneceted")
+  })
+
+
+  socket.on("change color", function(color) {
+    console.log("user wants to change the color to: " + color)
+    io.emit("change color", color)
+  })
+
+  socket.on("fetched user data", function(data) {
+    console.log("received user data")
+    io.emit("fetched user data", data)
+  })
+
+})
+
+http.listen("8888", () => {
+  console.log("Server started on http://localhost:8888.com")
+})
